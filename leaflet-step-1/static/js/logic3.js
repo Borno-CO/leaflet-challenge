@@ -18,14 +18,23 @@ function markerColor(magnitude) {
   if (magnitude < 2.0) {
     color = "#ffffcc";
   }
+  // else if (magnitude < 3.0) {
+  //   color = "#ffeda0";
+  // }
   else if (magnitude < 3.0) {
     color = "#fed976";
   }
+  // else if (magnitude < 4.0) {
+  //   color = "#feb24c";
+  // }
   else if (magnitude < 4.0) {
     color = "#fd8d3c";
   }
   else if (magnitude < 5.0) {
     color = "#fc4e2a";
+  }
+  else if (magnitude < 5.5) {
+    color = "#e31a1c";
   }
   else if (magnitude < 6.0) {
     color = "#bd0026";
@@ -60,11 +69,11 @@ function createFeatures(earthquakeData) {
       weight: 1
     };
     
-    // latlng variable not needed since L.geoJSON returns coordinates on line 79
+    // latlng variable not needed since L.geoJSON returns coordinates on line 88
     // var latlng = [feature.geometry.coordinates[1], feature.geometry.coordinates[0]]
     // console.log(`latlng: ${latlng}`);
     
-    // create circle markers with latlng from L.geoJSON (line 79) and using marker sytle options set above
+    // create circle markers with latlng from L.geoJSON (line 88) and using marker sytle options set above
     // bind popups to the circle markers
     return L.circleMarker(latlng, geojsonMarkerOptions)
       .bindPopup("<lu><strong>" + feature.properties.place + "</strong>" +
@@ -102,7 +111,12 @@ function createMap(earthquakes) {
       accessToken: API_KEY
     });
   
-    
+    // var faultLines = d3.json("https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json",
+    //     function (platedata) {
+    //     L.geoJSON(platedata, {
+    //         color: "orange", weight: 2});
+    //     });
+
     // Define a baseMaps object to hold our base layers
     var baseMaps = {
       "Satellite": satellitemap,
@@ -131,27 +145,15 @@ function createMap(earthquakes) {
     }).addTo(myMap);
   
     // get plate data and add to the map
-    d3.json("https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json",
-      function (platedata) {
-        var plates = L.geoJSON(platedata, {
-          color: "orange", weight: 2}).addTo(myMap);
-      });
-
-    var legend = L.control({ position: "bottomright" });
-
-    legend.onAdd = function(map) {
-      var div = L.DomUtil.create("div", "legend");
-      div.innerHTML += "<h4>Magnitude</h4>";
-      div.innerHTML += '<i style="background: #ffffcc"></i><span>0.0 < 2.0</span><br>';
-      div.innerHTML += '<i style="background: #fed976"></i><span>2.0 < 3.0</span><br>';
-      div.innerHTML += '<i style="background: #fd8d3c"></i><span>3.0 < 4.0</span><br>';
-      div.innerHTML += '<i style="background: #fc4e2a"></i><span>4.0 < 5.0</span><br>';
-      div.innerHTML += '<i style="background: #bd0026"></i><span>5.0 < 6.0</span><br>';
-      div.innerHTML += '<i style="background: #800026"></i><span>6.0 - 10.0</span><br>';
-         
-      return div;
-    };
+    faultData = d3.json("https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json");
     
-    legend.addTo(myMap);
+    function createFaults(platedata) {
+        L.geoJSON(platedata, {
+          color: "orange", weight: 2});
+      };
 
-};
+    var faultlines = createFaults(faultdata);
+
+    
+
+}
