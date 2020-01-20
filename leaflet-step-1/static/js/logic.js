@@ -119,7 +119,7 @@ function createMap(earthquakes) {
       center: [
         37.09, -95.71
       ],
-      zoom: 5,
+      zoom: 4,
       layers: [satellitemap, earthquakes]
     });
   
@@ -133,9 +133,10 @@ function createMap(earthquakes) {
     // get plate data and add to the map
     d3.json("https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json",
       function (platedata) {
-        var plates = L.geoJSON(platedata, {
+        L.geoJSON(platedata, {
           color: "orange", weight: 2}).addTo(myMap);
       });
+    
 
     var legend = L.control({ position: "bottomright" });
 
